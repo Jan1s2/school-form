@@ -3,15 +3,14 @@ const app = express();
 
 const bodyParser = require("body-parser"); 
 const moment = require("moment"); 
-const csv = require('csvtojson');
 
-const fs = require("fs"); 
+const sqlite = require('sqlite3').verbose();
+
+const db = new sqlite.Database('data/pocasi.db');
+
 const path = require("path");
-const res = require("express/lib/response");
 
 const port = 8080;
-
-const filePath = path.join(__dirname, 'data/pocasi.csv');
 
 const validWeather = new Set(['jasno', 'skoro jasno', 'polojasno', 'skoro zataženo', 'zataženo']);
 
@@ -23,7 +22,6 @@ app.set("views", path.join(__dirname, "views"));
 
 const urlencodedParser = bodyParser.urlencoded({extended: false});
 app.post('/data', urlencodedParser, (req, res) => {
-    let info = `"${req.body.datum}","${req.body.pocasi}","${req.body.teplota}"\n`;
     if (!validWeather.has(req.body.pocasi)) {
         return res.status(400).json({
             success: false,
@@ -44,25 +42,23 @@ app.post('/data', urlencodedParser, (req, res) => {
             message: "Neplatná teplota"
         });
     }
-
-    fs.appendFile(filePath, info, function(err) {
+    db.run("INSERT INTO teploty (datum, pocasi, teplota) VALUES (?, ?, ?)", req.body.datum, req.body.pocasi, req.body.teplota, function(err) {
         if (err) {
-          console.error(err);
-          return res.status(500).json({
-            success: false,
-            message: "Nastala chyba během ukládání souboru"
-          });
-        }
+            console.error(err);
+            return res.status(500).json({
+              success: false,
+              message: "Nastala chyba během ukládání souboru"
+            });
+          }
     });
+
     res.redirect(302, '/');
 });
 
 app.get('/data', (req, res) => {
-    csv({headers: ['datum', 'pocasi', 'teplota']})
-    .fromFile(filePath)
-    .then(data => {
-        console.log(data);
-        res.render('data', {pocasi: data});
+    db.all("SELECT datum,pocasi,teplota FROM teploty", function(err, rows) {
+        console.log(rows);
+        res.render('data', {pocasi: rows});
     });
 });
 
