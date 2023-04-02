@@ -1,0 +1,16 @@
+html
+head 
+    title test
+body
+    table
+        thead 
+            th Datum 
+            th Počasí
+            th Teplota
+        tbody
+            each teplota in pocasi
+                tr 
+                    td #{teplota.datum}
+                    td #{teplota.pocasi}
+                    td #{teplota.teplota}
+        
