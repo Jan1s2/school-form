@@ -1,16 +1,28 @@
+doctype html
 html
-head 
-    title test
-body
-    table
-        thead 
-            th Datum 
-            th Počasí
-            th Teplota
-        tbody
-            each teplota in pocasi
-                tr 
-                    td #{teplota.datum}
-                    td #{teplota.pocasi}
-                    td #{teplota.teplota}
-        
+    head 
+        title Informace o pocasi
+        link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA==" crossorigin="anonymous" referrerpolicy="no-referrer")
+    body
+        header.p-5.bg-danger.text-white.text-center
+            h1 Výpis z tabulky
+        main.container.pt-3.align-self-center.col-6
+            div.table-responsive
+                table.table.table-striped.table-bordered
+                    thead
+                        tr
+                            th(scope="col") Datum 
+                            th(scope="col") Počasí
+                            th(scope="col") Teplota
+                    tbody
+                        each teplota in pocasi
+                            tr
+                                td #{teplota.datum}
+                                td #{teplota.pocasi}
+                                td #{teplota.teplota}  &deg;C
+        footer.p-2.bg-warning
+            div.container.text-muted
+                p.float-end
+                    a(href="/").text-decoration-none.text-muted Zpět na formulář
+                p &copy; - Jan Stránský - 2023
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.min.js" integrity="sha512-1/RvZTcCDEUjY/CypiMz+iqqtaoQfAITmNSJY17Myp4Ms5mdxPS5UV7iOfdZoxcGhzFbOm6sntTKJppjvuhg4g==" crossorigin="anonymous" referrerpolicy="no-referrer")
